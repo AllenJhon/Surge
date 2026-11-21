@@ -59,7 +59,6 @@ https://raw.githubusercontent.com/AllenJhon/surge/main/Surge-Icons.json
 | 微信外部链接解锁 | [zZPiglet](https://github.com/zZPiglet) | [hub.kelee.one](https://hub.kelee.one) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/weixin_external_link_unlock.sgmodule) |
 | 腾讯视频净化 | TG@ZenMoFiShi | — | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/tencent_video_clean.sgmodule) |
 | 微信小程序去广告 | [可莉🅥](https://github.com/luestr/ProxyResource/blob/main/README.md) | [hub.kelee.one](https://hub.kelee.one) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/weixin_mini_programs_remove_ads.sgmodule) |
-| Sub-Store | — | — | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/sub_store.sgmodule) |
 | 广告平台拦截器 | [可莉🅥](https://github.com/luestr/ProxyResource/blob/main/README.md) | [hub.kelee.one](https://hub.kelee.one) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/ad_platform_blocker.sgmodule) |
 
 爱奇艺去广告-修复版基于可莉原版（2026-10-02），仅去掉 `DOMAIN,api.iqiyi.com,REJECT`；原版这条规则会拦主接口，导致打开爱奇艺时首页加载失败，其余规则、重写和 MITM 与原版一致。
