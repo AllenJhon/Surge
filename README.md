@@ -6,7 +6,7 @@
 
 策略组 → 图标 → 添加外部图标库，填入：
 
-https://raw.githubusercontent.com/AllenJhon/Surge-Icons/main/Surge-Icons.json
+https://raw.githubusercontent.com/AllenJhon/surge/main/Surge-Icons.json
 
 ## 上游来源
 
@@ -24,3 +24,15 @@ https://raw.githubusercontent.com/AllenJhon/Surge-Icons/main/Surge-Icons.json
 ## 更新
 
 每天自动拉取上游重新合并，有变化就更新本文件。
+
+## 模块
+
+### 爱奇艺去广告-修复版
+
+基于可莉的爱奇艺去广告（2026-10-02），只去掉了一条规则：`DOMAIN,api.iqiyi.com,REJECT`。原版这条规则会拦掉爱奇艺的主接口，导致打开爱奇艺时首页加载失败；其余规则、重写和 MITM 与原版一致。
+
+安装链接（Surge → 模块 → + → 粘贴链接）：
+
+https://raw.githubusercontent.com/AllenJhon/surge/main/iQiYi_remove_ads_fixed.sgmodule
+
+装完之后，记得把原来的「爱奇艺去广告」关掉，不然原版那条规则还在拦。
