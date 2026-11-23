@@ -1,20 +1,30 @@
-// 美团签到：外卖神券天天领 v2
+// 美团签到：外卖神券天天领 v3
 // 改编自 Euphoriawen/actions-mtz-coupons（MIT），按 2026-11 美团活动页新版改写
 // - 打开美团 App / 小程序浏览一次，自动保存 token（无需手动复制）
 // - 每天 11:05 自动领神券（gundamGrabV4）
 // 注意：token 过期后需重新打开美团浏览一次；App 内「我的-每日签到」是另一个接口，不在本次范围
-// v2 改动：美团模板接口已改版，不再返回带 app.js 链接的页面，改为加载器 JS；
-// 券配置改走组件接口 POST /component/instanceProps 获取，不再解析 app.js。
+// v2 改动：模板接口已改版，不再返回带 app.js 链接的页面，券配置改走 POST /component/instanceProps。
+// v3 改动：模板接口在真机上会被美团反爬拦截（302 到 verify.meituan.com 验证页），
+//   因此默认跳过模板调用，直接用活动 id（2026-11-23 从加载器实测：gdId 531693，pageId 536482）；
+//   只有硬编码 id 取不到组件时才回退到模板接口。
+//   同时抓取真实的 webview UA 一起保存，API 请求用它代替 Safari UA，减少被风控的可能。
 var TOKEN_KEY = 'meituan_token';
-var GUNDAM_ID = '2KAWnD';
-var UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Mobile/15E148 Safari/604.1';
+var UA_KEY = 'meituan_ua';
+var GUNDAM_ID = 531693;
+var PAGE_ID = 536482;
+var GUNDAM_ID_OLD = '2KAWnD';
+var UA_FALLBACK = 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Mobile/15E148 Safari/604.1';
 var HOST = 'https://mediacps.meituan.com';
 var MARKET = 'https://market.waimai.meituan.com';
+
+function ua() {
+  return $persistentStore.read(UA_KEY) || UA_FALLBACK;
+}
 
 function http(method, url, headers, body) {
   return new Promise(function (resolve, reject) {
     var opt = { url: url, headers: headers || {} };
-    if (!opt.headers['User-Agent']) opt.headers['User-Agent'] = UA;
+    if (!opt.headers['User-Agent']) opt.headers['User-Agent'] = ua();
     if (body !== undefined && body !== null) opt.body = body;
     $httpClient[method.toLowerCase()](opt, function (err, resp, data) {
       if (err) return reject(err);
@@ -65,11 +75,6 @@ function extractJsonAfter(text, marker) {
   return null;
 }
 
-function strField(s, re) {
-  var m = s.match(re);
-  return m ? m[1] : '';
-}
-
 // 在 instanceProps 返回的 JSON 里递归找券配置：
 // 形如 {expandCouponIds:{keys:[...]}, priorityCouponIds:{keys:[...]}, cubeToken, instanceID}
 // 或 keys 里含 coupon 的数组；返回 {instanceId, expand, priority, cubeToken}
@@ -118,6 +123,29 @@ function notify(title, sub) {
   $notification.post('美团签到', title, String(sub || '').slice(0, 200));
 }
 
+async function fetchRenderIds(token, gundamId) {
+  var ri = await http('GET', MARKET + '/gd/zc/renderinfo?el_biz=waimai&el_page=gundam.loader&gdId=' + gundamId + '&tenant=gundam',
+    { 'Cookie': cookieHeader(token), 'Referer': MARKET + '/' });
+  absorbCookies(ri.headers);
+  var riJson = JSON.parse(ri.data);
+  return Object.keys(riJson.data || {}).filter(function (k) { return riJson.data[k].render; });
+}
+
+async function fetchCouponMeta(token, pageId, renderIds) {
+  var props = await http('POST', MARKET + '/component/instanceProps',
+    { 'Cookie': cookieHeader(token), 'Content-Type': 'application/json', 'Origin': MARKET, 'Referer': MARKET + '/' },
+    JSON.stringify({ pageId: pageId, tenantId: 'gundam', instanceIds: renderIds }));
+  absorbCookies(props.headers);
+  var propsJson = JSON.parse(props.data);
+  var out = { found: null };
+  var propsData = propsJson.data || {};
+  var propKeys = Object.keys(propsData);
+  for (var i = 0; i < propKeys.length && !out.found; i++) {
+    findCouponData(propsData[propKeys[i]], propKeys[i], out);
+  }
+  return { meta: out.found, propCount: propKeys.length };
+}
+
 async function main() {
   var token = $persistentStore.read(TOKEN_KEY);
   if (!token) {
@@ -134,36 +162,26 @@ async function main() {
     return $done();
   }
   if (loginJson.code !== 0) throw new Error('登录检查失败: ' + (loginJson.msg || loginJson.message || loginJson.code));
-  // 2. 活动配置（新版加载器）：从 serverData 里取 globalData
-  var tpl = await http('GET', MARKET + '/api/template/get?env=current&el_biz=waimai&el_page=gundam.loader&gundam_id=' + GUNDAM_ID, { 'Cookie': cookieHeader(token) });
-  absorbCookies(tpl.headers);
-  var globalData = extractJsonAfter(tpl.data, 'globalData:');
-  if (!globalData || !globalData.gdId) throw new Error('活动配置获取失败');
-  if (globalData.expiredOrOffline) throw new Error('活动已下线');
-  var gundamId = globalData.gdId;
-  var pageId = globalData.pageId;
-  // 3. renderinfo：取 render=true 的组件实例 id
-  var ri = await http('GET', MARKET + '/gd/zc/renderinfo?el_biz=waimai&el_page=gundam.loader&gdId=' + gundamId + '&tenant=gundam', { 'Cookie': cookieHeader(token) });
-  absorbCookies(ri.headers);
-  var riJson = JSON.parse(ri.data);
-  var renderIds = Object.keys(riJson.data || {}).filter(function (k) { return riJson.data[k].render; });
-  if (!renderIds.length) throw new Error('没有可渲染的组件');
-  // 4. instanceProps：取各组件配置，从中找红包券数据
-  var props = await http('POST', MARKET + '/component/instanceProps',
-    { 'Cookie': cookieHeader(token), 'Content-Type': 'application/json', 'Origin': MARKET, 'Referer': MARKET + '/' },
-    JSON.stringify({ pageId: pageId, tenantId: 'gundam', instanceIds: renderIds }));
-  absorbCookies(props.headers);
-  var propsJson;
-  try { propsJson = JSON.parse(props.data); } catch (e) { throw new Error('组件配置返回异常'); }
-  var out = { found: null };
-  var propsData = propsJson.data || {};
-  var propKeys = Object.keys(propsData);
-  for (var i = 0; i < propKeys.length && !out.found; i++) {
-    findCouponData(propsData[propKeys[i]], propKeys[i], out);
+  // 2. renderinfo + instanceProps（默认用硬编码活动 id，跳过会被反爬拦截的模板接口）
+  var gundamId = GUNDAM_ID;
+  var pageId = PAGE_ID;
+  var renderIds = await fetchRenderIds(token, gundamId);
+  if (!renderIds.length) {
+    // 回退：模板接口重新取活动 id 再试一次
+    var tpl = await http('GET', MARKET + '/api/template/get?env=current&el_biz=waimai&el_page=gundam.loader&gundam_id=' + GUNDAM_ID_OLD, { 'Cookie': cookieHeader(token) });
+    absorbCookies(tpl.headers);
+    var globalData = extractJsonAfter(tpl.data, 'globalData:');
+    if (!globalData || !globalData.gdId) throw new Error('活动配置获取失败');
+    if (globalData.expiredOrOffline) throw new Error('活动已下线');
+    gundamId = globalData.gdId;
+    pageId = globalData.pageId;
+    renderIds = await fetchRenderIds(token, gundamId);
+    if (!renderIds.length) throw new Error('没有可渲染的组件');
   }
-  if (!out.found) throw new Error('券配置未找到（组件 ' + propKeys.length + ' 个，无券数据）');
-  var meta = out.found;
-  // 5. 领券
+  var res = await fetchCouponMeta(token, pageId, renderIds);
+  if (!res.meta) throw new Error('券配置未找到（组件 ' + res.propCount + ' 个，无券数据）');
+  var meta = res.meta;
+  // 3. 领券
   var payload = {
     actualLatitude: 0,
     actualLongitude: 0,
@@ -196,9 +214,14 @@ async function main() {
 }
 
 if (typeof $request !== 'undefined' && $request) {
-  // 抓包：从美团请求里保存 token
+  // 抓包：从美团请求里保存 token，同时保存真实的 webview UA 供 API 请求使用
   try {
-    var cookie = ($request.headers && ($request.headers['Cookie'] || $request.headers['cookie'])) || '';
+    var headers = $request.headers || {};
+    var cookie = headers['Cookie'] || headers['cookie'] || '';
+    var reqUa = headers['User-Agent'] || headers['user-agent'] || '';
+    if (reqUa && $persistentStore.read(UA_KEY) !== reqUa) {
+      $persistentStore.write(reqUa, UA_KEY);
+    }
     var m = cookie.match(/token=([^;]+)/);
     if (m && m[1] && $persistentStore.read(TOKEN_KEY) !== m[1]) {
       $persistentStore.write(m[1], TOKEN_KEY);
