@@ -62,7 +62,7 @@ https://raw.githubusercontent.com/AllenJhon/surge/main/Surge-Icons.json
 | 广告平台拦截器 | [可莉🅥](https://github.com/luestr/ProxyResource/blob/main/README.md) | [hub.kelee.one](https://hub.kelee.one) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/ad_platform_blocker.sgmodule) |
 | 蜜雪冰城签到 | [Sliverkiss](https://github.com/Sliverkiss) | [Gist](https://gist.github.com/Sliverkiss/865c82e42a5730bb696f6700ebb94cee) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/mxbc_checkin.sgmodule) |
 
-蜜雪冰城签到基于 Sliverkiss 原版，原版只有抓 token 的重写，没有定时签到；此版补了每天 8 点自动签到（签到 + 雪王铺任务）。装完后打开微信里的蜜雪冰城小程序，进一次“我的”页面抓 token，之后每天自动签到。
+蜜雪冰城签到基于 Sliverkiss 原版，原版只有抓 token 的重写，没有定时签到；此版补了每天 8 点自动签到（签到 + 雪王铺任务）。2026-11-23 修复：原版脚本内置版本号 3.0.3 太旧，签到被服务器以“请升级至最新版本”拒绝，已升到 3.3.66。装完后打开微信里的蜜雪冰城小程序，进一次“我的”页面抓 token，之后每天自动签到。
 
 爱奇艺去广告-修复版基于可莉原版（2026-10-02），仅去掉 `DOMAIN,api.iqiyi.com,REJECT`；原版这条规则会拦主接口，导致打开爱奇艺时首页加载失败，其余规则、重写和 MITM 与原版一致。
 
