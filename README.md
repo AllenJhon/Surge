@@ -27,7 +27,7 @@ https://raw.githubusercontent.com/AllenJhon/surge/main/Surge-Icons.json
 
 ## 模块
 
-以下 30 个模块从 Surge 现装版本导出，原作者见表。
+以下 29 个模块从 Surge 现装版本导出，原作者见表。
 
 | 模块 | 原作者 | 上游 | 安装 |
 | --- | --- | --- | --- |
@@ -60,9 +60,6 @@ https://raw.githubusercontent.com/AllenJhon/surge/main/Surge-Icons.json
 | 腾讯视频净化 | TG@ZenMoFiShi | — | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/tencent_video_clean.sgmodule) |
 | 微信小程序去广告 | [可莉🅥](https://github.com/luestr/ProxyResource/blob/main/README.md) | [hub.kelee.one](https://hub.kelee.one) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/weixin_mini_programs_remove_ads.sgmodule) |
 | 广告平台拦截器 | [可莉🅥](https://github.com/luestr/ProxyResource/blob/main/README.md) | [hub.kelee.one](https://hub.kelee.one) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/ad_platform_blocker.sgmodule) |
-| 蜜雪冰城签到 | [Sliverkiss](https://github.com/Sliverkiss) | [Gist](https://gist.github.com/Sliverkiss/865c82e42a5730bb696f6700ebb94cee) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/mxbc_checkin.sgmodule) |
-
-蜜雪冰城签到基于 Sliverkiss 原版，原版只有抓 token 的重写，没有定时签到；此版补了每天 8 点自动签到（签到 + 雪王铺任务）。2026-11-23 修复：原版脚本用旧 App 请求头，签到被服务器以“请升级至最新版本”拒绝（只升版本号到 3.3.66 无效），已改用微信小程序请求头。装完后打开微信里的蜜雪冰城小程序，进一次“我的”页面抓 token，之后每天自动签到。
 
 爱奇艺去广告-修复版基于可莉原版（2026-10-02），仅去掉 `DOMAIN,api.iqiyi.com,REJECT`；原版这条规则会拦主接口，导致打开爱奇艺时首页加载失败，其余规则、重写和 MITM 与原版一致。
 
