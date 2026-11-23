@@ -33,7 +33,7 @@ https://raw.githubusercontent.com/AllenJhon/surge/main/Surge-Icons.json
 | --- | --- | --- | --- |
 | 拼多多去广告 | [ZenmoFeiShi](https://github.com/ZenmoFeiShi), [可莉🅥](https://github.com/luestr/ProxyResource/blob/main/README.md) | [hub.kelee.one](https://hub.kelee.one) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/pinduoduo_remove_ads.sgmodule) |
 | DNSForge 自动签到 | [hinokka](https://github.com/hinokka) | [GitHub](https://github.com/hinokka) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/dnsforge_auto_checkin.sgmodule) |
-| 美团签到 | [Euphoriawen](https://github.com/Euphoriawen/actions-mtz-coupons)（改编） | [GitHub](https://github.com/Euphoriawen/actions-mtz-coupons) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/meituan_checkin_v4.sgmodule) |
+| 美团签到 | [Euphoriawen](https://github.com/Euphoriawen/actions-mtz-coupons)（改编） | [GitHub](https://github.com/Euphoriawen/actions-mtz-coupons) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/meituan_checkin_v5.sgmodule) |
 | 淘宝去广告 | [RuCu6](https://github.com/RuCu6) | [hub.kelee.one](https://hub.kelee.one) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/taobao_remove_ads.sgmodule) |
 | 喜马拉雅去广告 | [可莉🅥](https://github.com/luestr/ProxyResource/blob/main/README.md) | [hub.kelee.one](https://hub.kelee.one) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/ximalaya_remove_ads.sgmodule) |
 | 威锋去广告 | [可莉🅥](https://github.com/luestr/ProxyResource/blob/main/README.md) | [hub.kelee.one](https://hub.kelee.one) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/weifeng_remove_ads.sgmodule) |
