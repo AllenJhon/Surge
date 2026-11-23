@@ -38,12 +38,18 @@ $.doFlag = { "true": "✅", "false": "⛔️" };
 //------------------------------------------
 const baseUrl = "https://mxsa.mxbc.net"
 const _headers = {
-    "app": "mxbc",
-    "appchannel": "xiaomi",
-    "appversion": "3.3.66",
-    "Access-Token": "",
     "Host": "mxsa.mxbc.net",
-    "User-Agent": "okhttp/4.4.1"
+    "Content-Type": "application/json",
+    "xweb_xhr": "1",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 MicroMessenger/7.0.20.1781(0x6700143B) NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF WindowsWechat(0x6309080f) XWEB/9105",
+    "version": "2.2.5",
+    "Accept": "*/*",
+    "Sec-Fetch-Site": "cross-site",
+    "Sec-Fetch-Mode": "cors",
+    "Sec-Fetch-Dest": "empty",
+    "Referer": "https://servicewechat.com/wx7696c66d2245d107/105/page-frame.html",
+    "Accept-Language": "zh-CN,zh;q=0.9",
+    "Access-Token": ""
 };
 const fetch = async (o) => {
     try {
