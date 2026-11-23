@@ -1,0 +1,13 @@
+#!name=美团签到
+#!desc=美团外卖神券天天领：每天 11:05 自动领券；打开美团一次自动保存 token
+#!author=Jhon
+#!homepage=https://github.com/AllenJhon/Surge
+#!date=2026-11-23 14:18:00
+#!tag=Check-in
+
+[Script]
+美团Token抓取 = type=http-request,pattern=^https://(market\\.waimai|mediacps)\\.meituan\\.com,requires-body=false,script-path=https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/meituan_checkin_v3.js,timeout=30
+美团神券领取 = type=cron,cronexp="0 5 11 * * *",wake-system=true,script-path=https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/meituan_checkin_v3.js,timeout=120
+
+[MITM]
+hostname = %APPEND% market.waimai.meituan.com, mediacps.meituan.com
