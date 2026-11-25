@@ -27,7 +27,7 @@ https://raw.githubusercontent.com/AllenJhon/surge/main/Surge-Icons.json
 
 ## 模块
 
-以下 29 个模块从 Surge 现装版本导出，原作者见表。
+以下 27 个模块从 Surge 现装版本导出，原作者见表。
 
 安装方法：Surge → 模块 → 右上角 + → 粘贴模块链接。
 
@@ -35,8 +35,6 @@ https://raw.githubusercontent.com/AllenJhon/surge/main/Surge-Icons.json
 
 | 模块 | 原作者 | 安装 |
 | --- | --- | --- |
-| 爱奇艺去广告（已停用） | [可莉🅥](https://github.com/luestr/ProxyResource/blob/main/README.md) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/iqiyi_remove_ads.sgmodule) |
-| 爱奇艺去广告-修复版 | [可莉🅥](https://github.com/luestr/ProxyResource/blob/main/README.md) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/iQiYi_remove_ads_fixed.sgmodule) |
 | 腾讯视频净化 | TG@ZenMoFiShi | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/tencent_video_clean.sgmodule) |
 | YouTube去广告隐藏Shorts版@Aioneas | DivineEngine + app2smile + Maasea + ddgksf2013 + Aioneas · [GitHub](https://github.com/Aioneas/Surge) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/youtube_remove_ads_hide_shorts_aioneas.sgmodule) |
 | 快手去广告 | [可莉🅥](https://github.com/luestr/ProxyResource/blob/main/README.md) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/kuaishou_remove_ads.sgmodule) |
