@@ -27,7 +27,7 @@ https://raw.githubusercontent.com/AllenJhon/surge/main/Surge-Icons.json
 
 ## 模块
 
-以下 29 个模块从 Surge 现装版本导出，原作者见表。
+以下 30 个模块从 Surge 现装版本导出，原作者见表。
 
 安装方法：Surge → 模块 → 右上角 + → 粘贴模块链接。
 
@@ -41,6 +41,7 @@ https://raw.githubusercontent.com/AllenJhon/surge/main/Surge-Icons.json
 | YouTube去广告隐藏Shorts版@Aioneas | DivineEngine + app2smile + Maasea + ddgksf2013 + Aioneas · [GitHub](https://github.com/Aioneas/Surge) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/youtube_remove_ads_hide_shorts_aioneas.sgmodule) |
 | 快手去广告 | [可莉🅥](https://github.com/luestr/ProxyResource/blob/main/README.md) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/kuaishou_remove_ads.sgmodule) |
 | 喜马拉雅去广告 | [可莉🅥](https://github.com/luestr/ProxyResource/blob/main/README.md) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/ximalaya_remove_ads.sgmodule) |
+| 网易云音乐去广告 | [Yu9191](https://github.com/Yu9191) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/netease_music_remove_ads.sgmodule) |
 
 ### 🛒 购物生活
 
