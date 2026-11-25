@@ -27,7 +27,7 @@ https://raw.githubusercontent.com/AllenJhon/surge/main/Surge-Icons.json
 
 ## 模块
 
-以下 30 个模块从 Surge 现装版本导出，原作者见表。
+以下 29 个模块从 Surge 现装版本导出，原作者见表。
 
 安装方法：Surge → 模块 → 右上角 + → 粘贴模块链接。
 
@@ -98,5 +98,4 @@ https://raw.githubusercontent.com/AllenJhon/surge/main/Surge-Icons.json
 | BoxJs | ChavyLeung · [BoxJs 文档](https://docs.boxjs.app/) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/boxjs.sgmodule) |
 | QX重写&规则集转化 | @小白脸 | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/qx_rewrite_ruleset_converter.sgmodule) |
 | Script Hub: 重写 & 规则集转换 | @小白脸 @xream @keywos @ckyb | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/script_hub_rewrite_ruleset_converter.sgmodule) |
-| DNSForge 自动签到 | [hinokka](https://github.com/hinokka) | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/dnsforge_auto_checkin.sgmodule) |
 | hjsq | — | [安装](https://raw.githubusercontent.com/AllenJhon/Surge/main/Modules/hjsq.sgmodule) |
