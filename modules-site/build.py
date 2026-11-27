@@ -777,6 +777,12 @@ function openDetail(slug){
   document.getElementById('modalClose').addEventListener('click', closeDetail);
   document.getElementById('copyInst').addEventListener('click', function(){ copyText(url, this); });
   document.getElementById('detailBtn').addEventListener('click', function(){
+    var rv = document.getElementById('rawView');
+    if (rv && rv.style.display === 'none') {
+      rv.style.display = 'block';
+      var tab = document.getElementById('tabRaw');
+      if (tab) { tab.textContent = '收起模块内容 ▾'; tab.classList.add('on'); }
+    }
     var el = document.getElementById('tabRaw');
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
