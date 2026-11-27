@@ -44,6 +44,8 @@ main{padding:12px;max-width:1060px;margin:0 auto}
 .badge.panel{background:#064e3b;color:var(--ok)}
 .badge.ok{background:#064e3b;color:var(--ok)}
 .badge.unknown{background:#422006;color:var(--warn)}
+.preview-link{font-size:11.5px;color:var(--accent);cursor:pointer;margin-left:6px;vertical-align:1px;font-weight:400;white-space:nowrap}
+.preview-link:hover{text-decoration:underline}
 .star{position:absolute;top:10px;right:10px;border:none;background:none;font-size:19px;cursor:pointer;color:#4b5563;padding:2px 6px}
 .star.fav{color:#f5a623}
 .src-links{margin-top:9px;font-size:12.5px;display:flex;gap:14px}
@@ -193,7 +195,7 @@ function cardHtml(m){
   if (m.upstreamUrl) links += '<a href="' + esc(m.upstreamUrl) + '" target="_blank" rel="noopener">上游原文 ↗</a>';
   return '<article class="card" data-slug="' + esc(m.slug) + '">' +
     '<button class="star' + (favs[m.slug] ? ' fav' : '') + '" data-star="' + esc(m.slug) + '" aria-label="收藏">' + (favs[m.slug] ? '★' : '☆') + '</button>' +
-    '<h3>' + esc(m.name) + '<span class="ver">' + esc(m.version || '') + '</span>' + health + panel + '</h3>' +
+    '<h3>' + esc(m.name) + '<span class="ver">' + esc(m.version || '') + '</span>' + health + panel + '<span class="preview-link">预览模块内容</span></h3>' +
     '<div class="meta">作者：' + esc(m.author || '') + ' · ' + esc((m.category && m.category.name) || '') + ' · 更新 ' + esc(fmtDate(m.updatedAt)) + '</div>' +
     '<div class="desc">' + esc(m.description || '') + '</div>' +
     '<div class="tags">' + tags + '</div>' +
