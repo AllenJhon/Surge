@@ -1,0 +1,13 @@
+#!name=Netflix IMDB 評分
+#!desc=在 Netflix App 顯示評分。 v20200627
+#!category=Tweaks
+#!system=ios
+
+[Script]
+netflix_rating = type=http-request, pattern=^https?://ios\.prod\.ftl\.netflix\.com/iosui/user/.+path=%5B%22videos%22%2C%\d+%22%2C%22summary%22%5D, script-path=https://kinta.ma/surge/scripts/netflix_rating.js
+
+netflix_rating = type=http-response, pattern=^https?://ios\.prod\.ftl\.netflix\.com/iosui/user/.+path=%5B%22videos%22%2C%\d+%22%2C%22summary%22%5D, script-path=https://kinta.ma/surge/scripts/netflix_rating.js, requires-body=true
+
+[MITM]
+hostname = %APPEND% ios.prod.ftl.netflix.com
+
