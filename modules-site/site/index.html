@@ -44,8 +44,16 @@ main{padding:12px;max-width:1060px;margin:0 auto}
 .badge.panel{background:#064e3b;color:var(--ok)}
 .badge.ok{background:#064e3b;color:var(--ok)}
 .badge.unknown{background:#422006;color:var(--warn)}
-.preview-link{font-size:11.5px;color:var(--accent);cursor:pointer;margin-left:6px;vertical-align:1px;font-weight:400;white-space:nowrap}
-.preview-link:hover{text-decoration:underline}
+.detail-link{font-size:11.5px;color:var(--accent);cursor:pointer;margin-left:6px;vertical-align:1px;font-weight:400;white-space:nowrap}
+.detail-link:hover{text-decoration:underline}
+.copy-link{color:var(--accent);cursor:pointer}
+.copy-link:hover{text-decoration:underline}
+.linkrow{justify-content:space-between;align-items:center}
+.linkrow .group{display:flex;gap:8px;flex-wrap:wrap}
+.btn.import{background:#fff;border-color:#fff;color:#111827;border-radius:999px;padding:10px 18px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.linkrow a.btn.import{color:#111827}
+.btn.ghost{background:transparent;border:1px solid #2e3440;color:#e6e8eb;border-radius:999px;padding:10px 16px;display:inline-flex;align-items:center;gap:6px}
+.btn.ghost:hover{border-color:#4b5563}
 .star{position:absolute;top:10px;right:10px;border:none;background:none;font-size:19px;cursor:pointer;color:#4b5563;padding:2px 6px}
 .star.fav{color:#f5a623}
 .src-links{margin-top:9px;font-size:12.5px;display:flex;gap:14px}
@@ -134,6 +142,9 @@ function saveFavs(){ try { localStorage.setItem(FAV_KEY, JSON.stringify(Object.k
 var state = { q:'', cat:'all', tag:'', favOnly:false, sort:'updated', shown:PAGE };
 var BASE_URL = location.protocol.indexOf('http') === 0 ? location.origin : '';
 function surgeInstallUrl(m){ return 'surge:///install-module?url=' + encodeURIComponent(BASE_URL + m.url); }
+var ICO_DOWN = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m6 11 6 6 6-6"/><path d="M4 21h16"/></svg>';
+var ICO_LINK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>';
+var ICO_CFG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>';
 
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function fmtDate(s){ return s ? String(s).slice(0, 10) : ''; }
@@ -190,12 +201,13 @@ function cardHtml(m){
   var panel = m.hasPanel ? '<span class="badge panel">面板</span>' : '';
   var tags = (m.tags || []).slice(0, 4).map(function(t){ return '<span class="tag">' + esc(t) + '</span>'; }).join('');
   var links = '';
-  if (BASE_URL) links += '<a href="' + surgeInstallUrl(m) + '">一键安装</a>';
+  if (BASE_URL) links += '<span class="copy-link" data-copy="' + esc(installUrl(m)) + '">复制链接</span>';
+  if (BASE_URL) links += '<a href="' + surgeInstallUrl(m) + '">导入 Surge</a>';
   if (m.repositoryUrl) links += '<a href="' + esc(m.repositoryUrl) + '" target="_blank" rel="noopener">仓库 ↗</a>';
   if (m.upstreamUrl) links += '<a href="' + esc(m.upstreamUrl) + '" target="_blank" rel="noopener">上游原文 ↗</a>';
   return '<article class="card" data-slug="' + esc(m.slug) + '">' +
     '<button class="star' + (favs[m.slug] ? ' fav' : '') + '" data-star="' + esc(m.slug) + '" aria-label="收藏">' + (favs[m.slug] ? '★' : '☆') + '</button>' +
-    '<h3>' + esc(m.name) + '<span class="ver">' + esc(m.version || '') + '</span>' + health + panel + '<span class="preview-link">预览模块内容</span></h3>' +
+    '<h3>' + esc(m.name) + '<span class="ver">' + esc(m.version || '') + '</span>' + health + panel + '<span class="detail-link">详情配置</span></h3>' +
     '<div class="meta">作者：' + esc(m.author || '') + ' · ' + esc((m.category && m.category.name) || '') + ' · 更新 ' + esc(fmtDate(m.updatedAt)) + '</div>' +
     '<div class="desc">' + esc(m.description || '') + '</div>' +
     '<div class="tags">' + tags + '</div>' +
@@ -210,6 +222,8 @@ function render(){
 }
 document.getElementById('grid').addEventListener('click', function(e){
   if (e.target.closest('a')) return; // 卡片内的仓库 / 上游原文链接：直接跳转，不打开详情
+  var cp = e.target.closest('[data-copy]');
+  if (cp) { copyText(cp.getAttribute('data-copy'), cp); return; }
   var star = e.target.closest('[data-star]');
   if (star) {
     e.stopPropagation();
@@ -237,7 +251,7 @@ function installUrl(m){
   return m.url;
 }
 function copyText(t, btn){
-  function done(){ if (btn) { var o = btn.textContent; btn.textContent = '已复制 ✓'; setTimeout(function(){ btn.textContent = o; }, 1500); } }
+  function done(){ if (btn) { var o = btn.innerHTML; btn.innerHTML = '已复制 ✓'; setTimeout(function(){ btn.innerHTML = o; }, 1500); } }
   if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(done, function(){ fallback(); }); }
   else fallback();
   function fallback(){
@@ -255,8 +269,8 @@ function openDetail(slug){
   var repo = m.repositoryUrl ? '<div><span>仓库：</span><a href="' + esc(m.repositoryUrl) + '" target="_blank" rel="noopener">' + esc(m.repositoryUrl) + '</a></div>' : '';
   var up = m.upstreamUrl ? '<div><span>上游原文：</span><a href="' + esc(m.upstreamUrl) + '" target="_blank" rel="noopener">' + esc(m.upstreamUrl) + '</a></div>' : '';
   var surgeBtn = BASE_URL
-    ? '<a class="btn primary" href="' + esc(surgeInstallUrl(m)) + '">一键添加到 Surge</a>'
-    : '<span class="btn disabled" title="需部署到线上后可用">一键添加到 Surge</span>';
+    ? '<a class="btn import" href="' + esc(surgeInstallUrl(m)) + '">' + ICO_DOWN + '导入 Surge</a>'
+    : '<span class="btn disabled" title="需部署到线上后可用">导入 Surge</span>';
   document.getElementById('modal').innerHTML =
     '<button class="btn close" id="modalClose">关闭 ✕</button>' +
     '<h2>' + esc(m.name) + '</h2>' +
@@ -265,20 +279,20 @@ function openDetail(slug){
     '<div class="tags" style="margin-top:10px">' + (m.tags || []).map(function(t){ return '<span class="tag">' + esc(t) + '</span>'; }).join('') + '</div>' +
     '<div class="kv"><div><span>作者：</span>' + esc(m.author || '') + '</div>' + repo + up +
     '<div><span>安装链接：</span><span id="instUrl">' + esc(url) + '</span></div></div>' +
-    '<div class="linkrow">' + surgeBtn +
-      '<button class="btn" id="copyInst">复制安装链接</button>' +
-      '<button class="btn" id="favBtn">' + (favs[m.slug] ? '★ 已收藏' : '☆ 收藏') + '</button>' +
+    '<div class="linkrow"><div class="group">' + surgeBtn + '</div>' +
+      '<div class="group"><button class="btn ghost" id="copyInst">' + ICO_LINK + '复制链接</button>' +
+      '<button class="btn ghost" id="detailBtn">' + ICO_CFG + '详情配置</button></div>' +
     '</div>' +
-    '<div class="hint">一键安装：在 Safari 中点上面的按钮，会直接打开 Surge 并提示安装。手动安装：点「复制安装链接」，再到 Surge → 模块 → 右上角 + → 粘贴链接（微信等 App 内打开时一键安装可能无效，请用手动方式）。<br>注意：部分模块需要开启 MITM 才能完整生效，证书钉扎的 App 请谨慎。</div>' +
+    '<div class="hint">导入 Surge：在 Safari 中点上面的按钮，会直接打开 Surge 并提示安装。手动安装：点「复制链接」，再到 Surge → 模块 → 右上角 + → 粘贴链接（微信等 App 内打开时导入可能无效，请用手动方式）。<br>注意：部分模块需要开启 MITM 才能完整生效，证书钉扎的 App 请谨慎。</div>' +
     '<div class="tabs"><button class="btn on" id="tabRaw">预览模块内容</button></div>' +
     '<div class="preview-summary" id="previewSummary" style="display:none"></div>' +
     '<pre class="raw" id="rawView">加载中…</pre>';
   document.getElementById('modalBg').classList.add('open');
   document.getElementById('modalClose').addEventListener('click', closeDetail);
   document.getElementById('copyInst').addEventListener('click', function(){ copyText(url, this); });
-  document.getElementById('favBtn').addEventListener('click', function(){
-    if (favs[m.slug]) delete favs[m.slug]; else favs[m.slug] = 1;
-    saveFavs(); this.textContent = favs[m.slug] ? '★ 已收藏' : '☆ 收藏'; render();
+  document.getElementById('detailBtn').addEventListener('click', function(){
+    var el = document.getElementById('tabRaw');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
   fetch(m.url).then(function(r){
     if (!r.ok) throw new Error('HTTP ' + r.status);
