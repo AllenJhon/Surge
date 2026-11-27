@@ -60,7 +60,7 @@ header h1{font-size:17px;font-weight:650;letter-spacing:-.01em;white-space:nowra
 .sub-head{padding:28px 4px 4px}
 .sub-head h1{font-size:clamp(30px,7vw,38px);font-weight:600;letter-spacing:-.028em;line-height:1.08;margin-top:10px}
 .sub-head p{color:var(--muted);font-size:14px;margin-top:12px;line-height:1.7;max-width:560px}
-.disc-tools{margin-top:24px}
+.disc-tools{position:sticky;top:57px;z-index:20;padding:14px 0 12px;background:color-mix(in srgb,var(--bg) 92%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .disc-tools-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
 .sortseg{display:flex;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:2px;overflow-x:auto;scrollbar-width:none}
 .sortseg::-webkit-scrollbar{display:none}
@@ -128,8 +128,9 @@ main{padding:12px;max-width:1060px;margin:0 auto}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
 @property --rb-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
 @keyframes rb-spin{to{--rb-angle:360deg}}
-.card::before,.upd-row::before,.catcard::before,.statcard::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:conic-gradient(from var(--rb-angle,0deg),#ff2d78,#ff8a00,#ffe600,#2ee66b,#00c2ff,#7a5cff,#ff2d78);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;animation:rb-spin 5s linear infinite;pointer-events:none}
-@media (prefers-reduced-motion:reduce){.card::before,.upd-row::before,.catcard::before,.statcard::before{animation:none}}
+.card::before,.upd-row::before,.catcard::before,.statcard::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:conic-gradient(from var(--rb-angle,0deg),#ff2d78,#ff8a00,#ffe600,#2ee66b,#00c2ff,#7a5cff,#ff2d78);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;animation:none;pointer-events:none}
+.card:hover::before,.upd-row:hover::before,.catcard:hover::before,.statcard:hover::before,.card:active::before,.upd-row:active::before,.catcard:active::before,.statcard:active::before,.card.is-new::before{animation:rb-spin 5s linear infinite}
+@media (prefers-reduced-motion:reduce){.card::before,.upd-row::before,.catcard::before,.statcard::before,.card:hover::before,.upd-row:hover::before,.catcard:hover::before,.statcard:hover::before,.card:active::before,.upd-row:active::before,.catcard:active::before,.statcard:active::before,.card.is-new::before{animation:none}}
 .card{background:var(--glass-bg);-webkit-backdrop-filter:blur(20px) saturate(160%);backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--glass-line);border-radius:18px;padding:16px;cursor:pointer;position:relative;box-shadow:inset 0 1px 0 var(--glass-hi),var(--shadow-sm);transition:transform .2s,box-shadow .2s,border-color .2s,background .2s}
 .card:hover{border-color:var(--glass-hi);background:color-mix(in srgb,var(--glass-bg) 82%,#fff 18%);transform:translateY(-2px);box-shadow:inset 0 1px 0 var(--glass-hi),var(--shadow-md)}
 .card-top{display:flex;align-items:baseline;gap:6px;font-size:12px;color:var(--faint);padding-right:30px}
@@ -161,6 +162,7 @@ main{padding:12px;max-width:1060px;margin:0 auto}
 .src-links{margin-top:10px;font-size:12.5px;display:flex;gap:14px}
 .src-links a{color:var(--accent);text-decoration:none}
 .src-links a:hover{text-decoration:underline}
+.src-links a.btn.import:hover{text-decoration:none}
 .more{display:block;width:100%;margin:16px 0 8px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--text);font-size:15px;cursor:pointer}
 footer{color:var(--faint);font-size:12.5px;text-align:center;padding:18px 12px 28px;line-height:1.7}
 .about{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;text-align:left;max-width:1060px;margin:0 auto 14px;color:var(--muted)}
@@ -343,11 +345,11 @@ body{padding-bottom:92px}
         <div>
           <div class="eyebrow">精选 <span class="idx">02</span></div>
           <h2 class="sec-title">本期推荐</h2>
-          <p class="sec-sub">由维护者手动标记的模块，按最近更新时间排序。</p>
+          <p class="sec-sub">每个分类各取一个最近更新的可用模块。</p>
         </div>
         <a class="sec-action" href="#discover" onclick="showView('discover');return false;">全部模块 ↗</a>
       </div>
-      <div class="empty-state"><b>暂无精选模块</b><p>精选由维护者标记，标记后会自动出现在这里。</p><button class="btn" style="padding:10px 18px" onclick="showView('discover')">浏览全部模块</button></div>
+      <div class="grid" id="featGrid"></div>
     </section>
     <section class="home-sec">
       <div class="sec-head">
@@ -681,14 +683,12 @@ function cardHtml(m, rel){
   var dupe = (m.dupe > 0) ? '<span class="badge dupe">同名 ' + m.dupe + '</span>' : '';
   var tags = (m.tags || []).slice(0, 4).map(function(t){ return '<span class="tag">' + esc(t) + '</span>'; }).join('');
   var links = '';
-  if (BASE_URL) links += '<span class="copy-link" data-copy="' + esc(installUrl(m)) + '">复制链接</span>';
-  if (BASE_URL) links += '<a href="' + surgeInstallUrl(m) + '">导入 Surge</a>';
-  if (m.repositoryUrl) links += '<a href="' + esc(m.repositoryUrl) + '" target="_blank" rel="noopener">仓库 ↗</a>';
-  if (m.upstreamUrl) links += '<a href="' + esc(m.upstreamUrl) + '" target="_blank" rel="noopener">上游原文 ↗</a>';
-  return '<article class="card" data-slug="' + esc(m.slug) + '">' +
+  if (BASE_URL) links += '<a class="btn import" href="' + surgeInstallUrl(m) + '">导入 Surge</a>';
+  var isNew = m.updatedAt && (Date.now() - new Date(m.updatedAt).getTime() < 7*24*3600*1000);
+  return '<article class="card' + (isNew ? ' is-new' : '') + '" data-slug="' + esc(m.slug) + '">' +
     '<button class="star' + (favs[m.slug] ? ' fav' : '') + '" data-star="' + esc(m.slug) + '" aria-label="收藏">' + (favs[m.slug] ? '★' : '☆') + '</button>' +
     '<div class="card-top"><span class="cat">' + esc((m.category && m.category.name) || '未分类') + '</span><span class="ver">' + esc(m.version || '') + '</span>' + health + '</div>' +
-    '<h3>' + esc(m.name) + panel + dupe + '<span class="detail-link">详情配置</span></h3>' +
+    '<h3>' + esc(m.name) + panel + dupe + '</h3>' +
     '<div class="meta">作者：' + esc(m.author || '') + ' · 更新 ' + esc(fmtDate(m.updatedAt)) + (rel ? ' · ' + esc(rel) : '') + '</div>' +
     '<div class="desc">' + esc(m.description || '') + '</div>' +
     '<div class="tags">' + tags + '</div>' +
@@ -721,7 +721,7 @@ function onGridClick(e){
   var card = e.target.closest('[data-slug]');
   if (card) openDetail(card.getAttribute('data-slug'));
 }
-['grid','favGrid','updGroups','homeUpd','homeLib'].forEach(function(id){ document.getElementById(id).addEventListener('click', onGridClick); });
+['grid','favGrid','updGroups','homeUpd','homeLib','featGrid'].forEach(function(id){ document.getElementById(id).addEventListener('click', onGridClick); });
 var qTimer = null;
 document.getElementById('q').addEventListener('input', function(e){
   clearTimeout(qTimer);
@@ -770,15 +770,22 @@ function openDetail(slug){
       '<button class="btn ghost" id="detailBtn">' + ICO_CFG + '详情配置</button></div>' +
     '</div>' +
     '<div class="hint">导入 Surge：在 Safari 中点上面的按钮，会直接打开 Surge 并提示安装。手动安装：点「复制链接」，再到 Surge → 模块 → 右上角 + → 粘贴链接（微信等 App 内打开时导入可能无效，请用手动方式）。<br>注意：部分模块需要开启 MITM 才能完整生效，证书钉扎的 App 请谨慎。</div>' +
-    '<div class="tabs"><button class="btn on" id="tabRaw">预览模块内容</button></div>' +
+    '<div class="tabs"><button class="btn" id="tabRaw">预览模块内容 ▸</button></div>' +
     '<div class="preview-summary" id="previewSummary" style="display:none"></div>' +
-    '<pre class="raw" id="rawView">加载中…</pre>';
+    '<pre class="raw" id="rawView" style="display:none">加载中…</pre>';
   document.getElementById('modalBg').classList.add('open');
   document.getElementById('modalClose').addEventListener('click', closeDetail);
   document.getElementById('copyInst').addEventListener('click', function(){ copyText(url, this); });
   document.getElementById('detailBtn').addEventListener('click', function(){
     var el = document.getElementById('tabRaw');
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  document.getElementById('tabRaw').addEventListener('click', function(){
+    var rv = document.getElementById('rawView');
+    var open = rv.style.display !== 'none';
+    rv.style.display = open ? 'none' : 'block';
+    this.textContent = open ? '预览模块内容 ▸' : '收起模块内容 ▾';
+    this.classList.toggle('on', !open);
   });
   fetch(m.url).then(function(r){
     if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -885,6 +892,9 @@ function renderHome(){
   var newest = MODULES.slice().sort(function(a, b){ return String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')); });
   document.getElementById('homeUpd').innerHTML = newest.slice(0, 5).map(updRowHtml).join('');
   document.getElementById('homeLib').innerHTML = newest.slice(0, 6).map(function(m){ return cardHtml(m); }).join('');
+  var feat = CATS.map(function(c){ return byCat[c]; }).filter(Boolean)
+    .sort(function(a, b){ return String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')); }).slice(0, 6);
+  document.getElementById('featGrid').innerHTML = feat.map(function(m){ return cardHtml(m); }).join('');
 }
 function onCatCardClick(e){
   var t = e.target.closest('[data-catgo]'); if (!t) return;
