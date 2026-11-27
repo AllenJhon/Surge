@@ -1,0 +1,39 @@
+# 每天同步一次上游模块索引（son.zhiaon.top），有变化时自动提交回仓库。
+# 本文件放在仓库根目录 .github/workflows/；项目代码在 SITE_DIR 目录下
+# （默认 modules-site，可用仓库变量 SITE_DIR 覆盖）。
+name: 同步上游模块
+
+on:
+  schedule:
+    - cron: '0 1 * * *'  # 每天 01:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  SITE_DIR: ${{ vars.SITE_DIR || 'modules-site' }}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 同步上游
+        run: |
+          cd "$SITE_DIR"
+          python3 sync.py
+
+      - name: 提交并推送
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A "$SITE_DIR"
+          git diff --cached --quiet && echo "无变化，无需提交" && exit 0
+          git commit -m "同步上游模块更新：$(date +%Y-%m-%d)"
+          git push
